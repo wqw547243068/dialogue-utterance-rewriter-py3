@@ -385,14 +385,14 @@ def main(unused_argv):
 
     tf.set_random_seed(42)  # a seed value for randomness
 
-    if hps.mode == 'train':
+    if hps.mode.value == 'train':
         print("creating model...")
         model = SummarizationModel(hps, vocab)
         setup_training(model, batcher)
-    elif hps.mode == 'eval':
+    elif hps.mode.value == 'eval':
         model = SummarizationModel(hps, vocab)
         run_eval(model, batcher, vocab)
-    elif hps.mode == 'decode':
+    elif hps.mode.value == 'decode':
         decode_model_hps = hps  # This will be the hyperparameters for the decoder model
 
         # The model is configured with max_dec_steps=1

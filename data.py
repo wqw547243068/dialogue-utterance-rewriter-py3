@@ -4,7 +4,6 @@ import glob
 import random
 import struct
 import csv
-from tensorflow.core.example import example_pb2
 
 MARK_PAD = '<PAD>'  # This has a vocab id, which is used to pad the encoder input, decoder input and target sequence
 MARK_UNK = '<UNK>'  # This has a vocab id, which is used to represent out-of-vocabulary words
