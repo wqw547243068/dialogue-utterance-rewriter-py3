@@ -93,13 +93,10 @@ class Vocab(object):
 def split_text_with_whitespace(text):
     res = []
     text = text.strip()
-    if isinstance(text, str):
-        text = text.decode('utf-8')
 
     tmp = ''
     for ch in text:
-        if u'\u4e00' <= ch <= u'\u9fff' or ch == ' ' or ch == 'の'.decode(
-                'utf-8'):
+        if u'\u4e00' <= ch <= u'\u9fff' or ch == ' ' or ch == 'の':
             if tmp != '':
                 res.append(tmp)
                 tmp = ''
