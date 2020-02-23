@@ -9,7 +9,9 @@ import time
 import numpy as np
 import tensorflow as tf
 from data import *
-#from preprocessing import split_text_with_whitespace
+
+
+# from preprocessing import split_text_with_whitespace
 
 
 class Example(object):
@@ -37,7 +39,7 @@ class Example(object):
         self.enc_len = len(context_words)
         self.enc_input = [vocab.word2id(w) for w in context_words]
 
-        query_words = split_text_with_whitespace(query) + [MARK_EOS] # + ' '
+        query_words = split_text_with_whitespace(query) + [MARK_EOS]  # + ' '
         self.query_len = len(query_words)
         self.query_input = [vocab.word2id(w) for w in query_words]
 
@@ -45,7 +47,7 @@ class Example(object):
         summarization_ids = [vocab.word2id(w) for w in summarization_words]
 
         # Get the decoder input sequence and target sequence
-        #todo: 注意max_dec_steps
+        # todo: 注意max_dec_steps
         self.dec_input, self.target = self.get_dec_inp_targ_seqs(
             summarization_ids, hps.max_dec_steps, start_decoding,
             stop_decoding)
@@ -60,7 +62,7 @@ class Example(object):
         abs_ids_extend_vocab = summarization2ids(summarization_words, vocab, self.oovs)
 
         # Overwrite decoder target sequence so it uses the temp article OOV ids
-        #todo: 为什么 decoder input不用重写扩展
+        # todo: 为什么 decoder input不用重写扩展
         _, self.target = self.get_dec_inp_targ_seqs(
             abs_ids_extend_vocab, hps.max_dec_steps, start_decoding,
             stop_decoding)
@@ -68,7 +70,7 @@ class Example(object):
         # Store the original strings
         self.original_context = context
         self.original_summarization = summarization
-	self.original_query = query
+        self.original_query = query
 
     def get_dec_inp_targ_seqs(self, sequence, max_len, start_id, stop_id):
         """Given the reference summary as a sequence of tokens, 
@@ -103,15 +105,15 @@ class Example(object):
 
     def pad_encoder_input(self, max_len, pad_id):
         """Pad the encoder input sequence with pad_id up to max_len."""
-        #while len(self.enc_input) < max_len:
+        # while len(self.enc_input) < max_len:
         self.enc_input += [pad_id] * (max_len - len(self.enc_input))
         self.enc_input_extend_vocab += [pad_id] * (
-            max_len - len(self.enc_input_extend_vocab))
-    
+                max_len - len(self.enc_input_extend_vocab))
+
     def pad_query_input(self, max_len, pad_id):
         self.query_input += [pad_id] * (max_len - len(self.query_input))
         self.query_input_extend_vocab += [pad_id] * (
-            max_len - len(self.query_input_extend_vocab))
+                max_len - len(self.query_input_extend_vocab))
 
 
 class Batch(object):
@@ -194,7 +196,6 @@ class Batch(object):
             for i, ex in enumerate(example_list):
                 self.enc_batch_extend_vocab[i, :] = ex.enc_input_extend_vocab[:]
                 self.query_batch_extend_vocab[i, :] = ex.query_input_extend_vocab[:]
-                    
 
     def init_decoder_seq(self, example_list, hps):
         """Initializes the following:
@@ -265,8 +266,8 @@ class Batcher(object):
             self._bucketing_cache_size = 1  # only load one batch's worth of examples before bucketing; this essentially means no bucketing
             self._finished_reading = False  # this will tell us when we're finished reading the dataset
         else:
-            #多线程随机性
-            self._num_example_q_threads = 1  #16 num threads to fill example queue
+            # 多线程随机性
+            self._num_example_q_threads = 1  # 16 num threads to fill example queue
             self._num_batch_q_threads = 1  # 4 num threads to fill batch queue
             self._bucketing_cache_size = 100  # how many batches-worth of examples to load into cache before bucketing
 
@@ -411,7 +412,7 @@ class Batcher(object):
                         record = line.decode('utf-8').strip().split('\t\t')
                         if len(record) != 4:
                             continue
-                        yield (record[0].strip()+ '/' +  record[1].strip(), record[3].strip(), record[2].strip())
+                        yield (record[0].strip() + '/' + record[1].strip(), record[3].strip(), record[2].strip())
             if single_pass:
                 print("text_generator completed reading all datafiles. No more data.")
                 break
