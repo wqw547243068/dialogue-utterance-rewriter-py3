@@ -257,7 +257,7 @@ class Batcher(object):
         # Initialize a queue of Batches waiting to be used, and a queue of Examples waiting to be batched
         self._batch_queue = queue.Queue(self.BATCH_QUEUE_MAX)
         self._example_queue = queue.Queue(
-            self.BATCH_QUEUE_MAX * self._hps.batch_size)
+            self.BATCH_QUEUE_MAX * self._hps.batch_size.value)
 
         # Different settings depending on whether we're in single_pass mode or not
         if single_pass:
