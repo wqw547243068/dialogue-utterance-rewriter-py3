@@ -151,24 +151,24 @@ def restore_best_model():
 
     # Initialize all vars in the model
     sess = tf.Session(config=util.get_config())
-    print "Initializing all variables..."
+    print("Initializing all variables...")
     sess.run(tf.global_variables_initializer())
 
     # Restore the best model from eval dir
     saver = tf.train.Saver(
         [v for v in tf.all_variables() if "Adagrad" not in v.name])
-    print "Restoring all non-adagrad variables from best model in eval dir..."
+    print("Restoring all non-adagrad variables from best model in eval dir...")
     curr_ckpt = util.load_ckpt(saver, sess, "eval")
-    print "Restored %s." % curr_ckpt
+    print("Restored %s." % curr_ckpt)
 
     # Save this model to train dir and quit
     new_model_name = curr_ckpt.split("/")[-1].replace("bestmodel", "model")
     new_fname = os.path.join(FLAGS.log_root, "train", new_model_name)
-    print "Saving model to %s..." % (new_fname)
+    print("Saving model to %s..." % (new_fname))
     new_saver = tf.train.Saver(
     )  # this saver saves all variables that now exist, including Adagrad variables
     new_saver.save(sess, new_fname)
-    print "Saved."
+    print("Saved.")
     exit()
 
 
@@ -178,7 +178,7 @@ def convert_to_coverage_model():
 
     # initialize an entire coverage model from scratch
     sess = tf.Session(config=util.get_config())
-    print "initializing everything..."
+    print("initializing everything...")
     sess.run(tf.global_variables_initializer())
 
     # load all non-coverage weights from checkpoint
@@ -186,17 +186,17 @@ def convert_to_coverage_model():
         v for v in tf.global_variables()
         if "coverage" not in v.name and "Adagrad" not in v.name
     ])
-    print "restoring non-coverage variables..."
+    print("restoring non-coverage variables...")
     curr_ckpt = util.load_ckpt(saver, sess)
-    print "restored."
+    print("restored.")
 
     # save this model and quit
     new_fname = curr_ckpt + '_cov_init'
-    print "saving model to %s..." % (new_fname)
+    print("saving model to %s..." % (new_fname))
     new_saver = tf.train.Saver(
     )  # this one will save all variables that now exist
     new_saver.save(sess, new_fname)
-    print "saved."
+    print("saved.")
     exit()
 
 
@@ -386,7 +386,7 @@ def main(unused_argv):
     tf.set_random_seed(42)  # a seed value for randomness
 
     if hps.mode == 'train':
-        print "creating model..."
+        print("creating model...")
         model = SummarizationModel(hps, vocab)
         setup_training(model, batcher)
     elif hps.mode == 'eval':

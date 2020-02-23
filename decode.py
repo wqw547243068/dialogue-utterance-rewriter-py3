@@ -21,7 +21,7 @@ import tensorflow as tf
 import beam_search
 import data
 import json
-#import pyrouge
+import pyrouge
 import util
 import logging
 import numpy as np
@@ -97,28 +97,28 @@ class BeamSearchDecoder(object):
                 tf.logging.info(
                     "Output has been saved in %s and %s. Now starting ROUGE eval...",
                     self._rouge_ref_dir, self._rouge_dec_dir)
-                #todo: need to update for rouge
+                # todo: need to update for rouge
                 # results_dict = rouge_eval(self._rouge_ref_dir,
                 #                           self._rouge_dec_dir)
                 # rouge_log(results_dict, self._decode_dir)
                 return
 
             original_context = batch.original_contexts[0]  # string
-	    original_query = batch.original_querys[0]
+            original_query = batch.original_querys[0]
             original_summarization = batch.original_summarizations[0]  # string
-            #original_abstract_sents = batch.original_abstracts_sents[
+            # original_abstract_sents = batch.original_abstracts_sents[
             #    0]  # list of strings
 
-            #context_withunks = data.show_art_oovs(original_context, self._vocab)
-            #abstract_withunks = data.show_abs_oovs(
-            #    original_summarization, self._vocab,
-            #    (batch.art_oovs[0] if FLAGS.pointer_gen else None))  # string
+            context_withunks = data.show_art_oovs(original_context, self._vocab)
+            abstract_withunks = data.show_abs_oovs(
+                original_summarization, self._vocab,
+                (batch.art_oovs[0] if FLAGS.pointer_gen else None))  # string
 
             # Run beam search to get best Hypothesis
             best_hyp = beam_search.run_beam_search(self._sess, self._model,
                                                    self._vocab, batch)
 
-          #  export_path = os.path.join(FLAGS.export_dir,str(FLAGS.export_version))
+            #  export_path = os.path.join(FLAGS.export_dir,str(FLAGS.export_version))
             # Extract the output ids from the hypothesis and convert back to words
             output_ids = [int(t) for t in best_hyp.tokens[1:]]
             decoded_words = data.outputids2words(
@@ -135,7 +135,7 @@ class BeamSearchDecoder(object):
             decoded_output = ''.join(decoded_words)  # single string
 
             if FLAGS.single_pass:
-                #todo: need to check
+                # todo: need to check
                 # write ref summary and decoded summary to file, to eval with pyrouge later
                 self.write_result(original_context, original_summarization,
                                   decoded_words, counter)
@@ -267,11 +267,13 @@ class BeamSearchDecoder(object):
 
 def print_results(article, abstract, decoded_output):
     """Prints the article, the reference summmary and the decoded summary to screen"""
-    print ""
+    print
+    ""
     tf.logging.info('ARTICLE:  %s', article)
     tf.logging.info('REFERENCE SUMMARY: %s', abstract)
     tf.logging.info('GENERATED SUMMARY: %s', decoded_output)
-    print ""
+    print
+    ""
 
 
 def make_html_safe(s):
@@ -323,9 +325,12 @@ def rouge_log(results_dict, dir_to_write):
 def get_decode_dir_name(ckpt_name):
     """Make a descriptive name for the decode dir, including the name of the checkpoint we use to decode. This is called in single_pass mode."""
 
-    if "train" in FLAGS.data_path: dataset = "train"
-    elif "val" in FLAGS.data_path: dataset = "val"
-    elif "test" in FLAGS.data_path: dataset = "test"
+    if "train" in FLAGS.data_path:
+        dataset = "train"
+    elif "val" in FLAGS.data_path:
+        dataset = "val"
+    elif "test" in FLAGS.data_path:
+        dataset = "test"
     else:
         raise ValueError(
             "FLAGS.data_path %s should contain one of train, val or test" %

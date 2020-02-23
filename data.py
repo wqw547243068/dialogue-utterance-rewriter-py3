@@ -32,11 +32,11 @@ class Vocab(object):
             self._count += 1
 
         # Read the vocab file and add words up to max_size
-        with open(vocab_file, 'r') as vocab_f:
+        with open(vocab_file, 'r', encoding='utf8') as vocab_f:
             for line in vocab_f:
-                pieces = line.decode('utf-8').split('\t\t')
+                pieces = line.split('\t\t')
                 if len(pieces) != 2:
-                    print 'Warning: incorrectly formatted line in vocabulary file: %s\n' % line
+                    print('Warning: incorrectly formatted line in vocabulary file: %s\n' % line)
                     continue
                 w = pieces[0]
                 if w in [MARK_UNK, MARK_PAD, MARK_GO, MARK_EOS]:
@@ -51,12 +51,12 @@ class Vocab(object):
                 self._id_to_word[self._count] = w
                 self._count += 1
                 if max_size != 0 and self._count >= max_size:
-                    print "max_size of vocab was specified as %i; we now have %i words. Stopping reading." % (
-                        max_size, self._count)
+                    print("max_size of vocab was specified as %i; we now have %i words. Stopping reading." % (
+                        max_size, self._count))
                     break
 
-        print "Finished constructing vocabulary of %i total words. Last word added: %s" % (
-            self._count, self._id_to_word[self._count - 1].encode("utf-8"))
+        print("Finished constructing vocabulary of %i total words. Last word added: %s" % (
+            self._count, self._id_to_word[self._count - 1].encode("utf-8")))
 
     def word2id(self, word):
         """Returns the id (integer) of a word (string). Returns <UNK> id if word is OOV."""
@@ -83,11 +83,11 @@ class Vocab(object):
         Args:
         fpath: place to write the metadata file
         """
-        print "Writing word embedding metadata file to %s..." % (fpath)
+        print("Writing word embedding metadata file to %s..." % (fpath))
         with open(fpath, "w") as f:
             fieldnames = ['word']
             writer = csv.DictWriter(f, delimiter="\t", fieldnames=fieldnames)
-            for i in xrange(self.size()):
+            for i in range(self.size()):
                 writer.writerow({"word": self._id_to_word[i].encode('utf-8')})
 
 
@@ -157,6 +157,7 @@ def context2ids(context_words, vocab):
             ids.append(i)
     return ids, oovs
 
+
 def query2ids(context_words, vocab, oovs):
     """Map the context words to their ids. Also return a list of OOVs in the context.
     Args:
@@ -185,6 +186,7 @@ def query2ids(context_words, vocab, oovs):
         else:
             ids.append(i)
     return ids, oovs
+
 
 def summarization2ids(summarization_words, vocab, context_oovs):
     """Map the abstract words to their ids. In-article OOVs are mapped to their temporary OOV numbers.
@@ -251,7 +253,7 @@ def show_art_oovs(article, vocab):
     words = split_text_with_whitespace(article)
     words = [("__%s__" % w) if vocab.word2id(w) == unk_token else w
              for w in words]
-    out_str = ''.join(words)  #中文，所以不用空格join
+    out_str = ''.join(words)  # 中文，所以不用空格join
     return out_str
 
 

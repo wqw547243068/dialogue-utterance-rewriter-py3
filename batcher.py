@@ -2,7 +2,7 @@
 # todo: query可能是"无"
 """This file contains code to process data into batches"""
 
-import Queue
+import queue
 from random import shuffle
 from threading import Thread
 import time
@@ -172,12 +172,12 @@ class Batch(object):
         for i, ex in enumerate(example_list):
             self.enc_batch[i, :] = ex.enc_input[:]
             self.enc_lens[i] = ex.enc_len
-            for j in xrange(ex.enc_len):
+            for j in range(ex.enc_len):
                 self.enc_padding_mask[i][j] = 1
 
             self.query_batch[i, :] = ex.query_input[:]
             self.query_lens[i] = ex.query_len
-            for j in xrange(ex.query_len):
+            for j in range(ex.query_len):
                 self.query_padding_mask[i][j] = 1
 
         # For pointer-generator mode, need to store some extra info
@@ -222,7 +222,7 @@ class Batch(object):
         for i, ex in enumerate(example_list):
             self.dec_batch[i, :] = ex.dec_input[:]
             self.target_batch[i, :] = ex.target[:]
-            for j in xrange(ex.dec_len):
+            for j in range(ex.dec_len):
                 self.dec_padding_mask[i][j] = 1
 
     def store_orig_strings(self, example_list):
@@ -254,8 +254,8 @@ class Batcher(object):
         self._single_pass = single_pass
 
         # Initialize a queue of Batches waiting to be used, and a queue of Examples waiting to be batched
-        self._batch_queue = Queue.Queue(self.BATCH_QUEUE_MAX)
-        self._example_queue = Queue.Queue(
+        self._batch_queue = queue.Queue(self.BATCH_QUEUE_MAX)
+        self._example_queue = queue.Queue(
             self.BATCH_QUEUE_MAX * self._hps.batch_size)
 
         # Different settings depending on whether we're in single_pass mode or not
@@ -272,13 +272,13 @@ class Batcher(object):
 
         # Start the threads that load the queues
         self._example_q_threads = []
-        for _ in xrange(self._num_example_q_threads):
+        for _ in range(self._num_example_q_threads):
             self._example_q_threads.append(
                 Thread(target=self.fill_example_queue))
             self._example_q_threads[-1].daemon = True
             self._example_q_threads[-1].start()
         self._batch_q_threads = []
-        for _ in xrange(self._num_batch_q_threads):
+        for _ in range(self._num_batch_q_threads):
             self._batch_q_threads.append(Thread(target=self.fill_batch_queue))
             self._batch_q_threads[-1].daemon = True
             self._batch_q_threads[-1].start()
@@ -351,14 +351,14 @@ class Batcher(object):
             if self._hps.mode != 'decode':
                 # Get bucketing_cache_size-many batches of Examples into a list, then sort
                 inputs = []
-                for _ in xrange(
+                for _ in range(
                         self._hps.batch_size * self._bucketing_cache_size):
                     inputs.append(self._example_queue.get())
                 inputs = sorted(inputs, key=lambda inp: inp.enc_len)
 
                 # Group the sorted Examples into batches, optionally shuffle the batches, and place in the batch queue.
                 batches = []
-                for i in xrange(0, len(inputs), self._hps.batch_size):
+                for i in range(0, len(inputs), self._hps.batch_size):
                     batches.append(inputs[i:i + self._hps.batch_size])
                 if not self._single_pass:
                     shuffle(batches)
@@ -367,7 +367,7 @@ class Batcher(object):
 
             else:  # beam search decode mode
                 ex = self._example_queue.get()
-                b = [ex for _ in xrange(self._hps.batch_size)]
+                b = [ex for _ in range(self._hps.batch_size)]
                 self._batch_queue.put(Batch(b, self._hps, self._vocab))
 
     def watch_threads(self):
@@ -413,5 +413,5 @@ class Batcher(object):
                             continue
                         yield (record[0].strip()+ '/' +  record[1].strip(), record[3].strip(), record[2].strip())
             if single_pass:
-                print "text_generator completed reading all datafiles. No more data."
+                print("text_generator completed reading all datafiles. No more data.")
                 break

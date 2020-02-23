@@ -108,7 +108,7 @@ def run_beam_search(sess, model, vocab, batch):
             t_coverage=np.zeros([batch.enc_batch.shape[1]]),
             b_coverage=np.zeros([batch.query_batch.shape[1]])
             )
-        for _ in xrange(FLAGS.beam_size)
+        for _ in range(FLAGS.beam_size)
     ]
     # this will contain finished hypotheses (those that have emitted the [STOP] token)
     results = []
@@ -119,7 +119,7 @@ def run_beam_search(sess, model, vocab, batch):
         latest_tokens = [h.latest_token for h in hyps]
         # change any in-article temporary OOV ids to [UNK] id, so that we can lookup word embeddings
         latest_tokens = [
-            t if t in xrange(vocab.size()) else vocab.word2id(data.MARK_UNK)
+            t if t in range(vocab.size()) else vocab.word2id(data.MARK_UNK)
             for t in latest_tokens
         ]
         # list of current decoder states of the hypotheses
@@ -145,12 +145,12 @@ def run_beam_search(sess, model, vocab, batch):
         # On the first step, we only had one original hypothesis (the initial hypothesis).
         # On subsequent steps, all original hypotheses are distinct.
         num_orig_hyps = 1 if steps == 0 else len(hyps)
-        for i in xrange(num_orig_hyps):
+        for i in range(num_orig_hyps):
             # take the ith hypothesis and new decoder state info
             h, new_state, attn_dist, new_t_coverage_i, new_b_coverage_i = hyps[i], new_states[
                 i], attn_dists[i], new_t_coverage[i], new_b_coverage[i]
             # for each of the top 2*beam_size hyps:
-            for j in xrange(FLAGS.beam_size * 2):
+            for j in range(FLAGS.beam_size * 2):
                 # Extend the ith hypothesis with the jth option
                 new_hyp = h.extend(
                     token=topk_ids[i, j],

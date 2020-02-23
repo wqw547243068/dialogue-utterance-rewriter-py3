@@ -615,7 +615,7 @@ class SummarizationModel(object):
         new_states = [
             tf.contrib.rnn.LSTMStateTuple(results['states'].c[i, :],
                                           results['states'].h[i, :])
-            for i in xrange(beam_size)
+            for i in range(beam_size)
         ]
 
         # Convert singleton list containing a tensor to a list of k arrays
@@ -628,8 +628,8 @@ class SummarizationModel(object):
             new_b_coverage = results['b_coverage'].tolist()
             assert len(new_t_coverage) == beam_size
         else:
-            new_t_coverage = [None for _ in xrange(beam_size)]
-            new_b_coverage = [None for _ in xrange(beam_size)]
+            new_t_coverage = [None for _ in range(beam_size)]
+            new_b_coverage = [None for _ in range(beam_size)]
 
         return results['ids'], results['probs'], new_states, attn_dists, new_t_coverage, new_b_coverage
 

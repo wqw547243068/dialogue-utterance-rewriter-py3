@@ -172,7 +172,7 @@ def attention_decoder(decoder_inputs,
             title_attn_dists.append(t_attn_dist)
             #brand_attn_dists.append(b_attn_dist)
 
-            calculate probability for each encoder
+            # calculate probability for each encoder
             with tf.variable_scope('calculate_encoder_prob'):
                 # Tensor shape (batch_size, 2)
                 p_t = linear([t_cv, b_cv, state.c, state.h, x], 2, True)
