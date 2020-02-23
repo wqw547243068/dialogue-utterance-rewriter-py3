@@ -1,4 +1,16 @@
-# dialogue-utterance-rewriter
+# dialogue-utterance-rewriter-py3
+
+This is an unoffical repo adapted from [Repo](https://github.com/chin-gyou/dialogue-utterance-rewriter). Followings are the differences:
+
+| Desc | Official | This |
+|:---:|:---:|:---:|
+| Python Version | Python 2.7 | Python 2.7 - 3.7 |
+| Tensorflow Version | 1.4 | 1.14 |
+| CUDA Version | CUDA8.0 | CUDA10.0 |
+| Code Run | Some issues | Can run |
+| Platform | Linux | Support both Linux & Windows |
+
+
 ## dialogue-utterance-rewriter-corpus
 
 Dataset for ACL 2019 paper "[Improving Multi-turn Dialogue Modelling with Utterance ReWriter
