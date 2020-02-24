@@ -204,11 +204,11 @@ class BeamSearchDecoder(object):
         # Write to file
         result_file = os.path.join(self._decode_dir, "result.txt")
 
-        with open(result_file, 'a') as f:
+        with open(result_file, 'a', encoding="utf8") as f:
             f.write(
-                original_context.encode('utf-8') + '\t\t' +
-                reference_summarization.encode('utf-8') + '\t\t' +
-                summarization.encode('utf-8') + "\n")
+                original_context + '\t\t' +
+                reference_summarization + '\t\t' +
+                summarization + "\n")
             f.flush()
 
         if ex_index % 10 == 0:

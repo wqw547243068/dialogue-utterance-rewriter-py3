@@ -52,10 +52,10 @@ tf.app.flags.DEFINE_integer('emb_dim', 128, 'dimension of word embeddings')
 tf.app.flags.DEFINE_integer('batch_size', 64, 'minibatch size')
 tf.app.flags.DEFINE_integer(
     'max_enc_steps', 50, 'max timesteps of encoder (max source text tokens)')
-tf.app.flags.DEFINE_integer('max_dec_steps', 30,
-                            'max timesteps of decoder (max summary tokens)')
 tf.app.flags.DEFINE_integer('beam_size', 4,
                             'beam size for beam search decoding.')
+tf.app.flags.DEFINE_integer('max_dec_steps', 30,
+                            'max timesteps of decoder (max summary tokens)')
 tf.app.flags.DEFINE_integer(
     'min_dec_steps', 5,
     'Minimum sequence length of generated summary. Applies only for beam search decoding mode'
@@ -399,7 +399,7 @@ def main(unused_argv):
         # because we only ever run one step of the decoder at a time (to do beam search).
         # Note that the batcher is initialized with max_dec_steps equal to e.g. 100
         # because the batches need to contain the full summaries
-        decode_model_hps = hps._replace(max_dec_steps=1)
+        # decode_model_hps = hps._replace(max_dec_steps=1)
         model = SummarizationModel(decode_model_hps, vocab)
         decoder = BeamSearchDecoder(model, batcher, vocab)
         # decode indefinitely (unless single_pass=True, in which case deocde the dataset exactly once)

@@ -1,6 +1,6 @@
 CUDA_VISIBLE_DEVICES=2 python run_summarization.py \
     --mode=train \
-    --data_path=../data/new_train.txt \
+    --data_path=../data/train.txt \
     --vocab_path=../data/vocab.txt \
     --log_root=./log \
     --exp_name=extractive \

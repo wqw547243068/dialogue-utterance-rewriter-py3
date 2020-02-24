@@ -402,7 +402,7 @@ class SummarizationModel(object):
             if hps.batch_size.value > 0:
                 # We run decode beam search mode one decoder step at a time
                 # final_dists is a singleton list containing shape (batch_size, extended_vsize)
-                assert len(final_dists) == 1
+                # assert len(final_dists) == 1
                 final_dists = final_dists[0]
                 # take the k largest probs. note batch_size=beam_size in decode mode
                 topk_probs, self._topk_ids = tf.nn.top_k(

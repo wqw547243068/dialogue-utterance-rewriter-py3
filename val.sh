@@ -1,7 +1,7 @@
 CUDA_VISIBLE_DEVICES=1 python run_summarization.py\
     --mode=eval \
-    --data_path=../data/extractive_data/val.txt \
-    --vocab_path=../data/extractive_data/vocab.txt \
+    --data_path=../data/val.txt \
+    --vocab_path=../data/vocab.txt \
     --log_root=./log \
     --exp_name=extractive \
     --vocab_size=30000 \
