@@ -14,7 +14,7 @@ from model import SummarizationModel
 from decode import BeamSearchDecoder
 import util
 from tensorflow.python import debug as tf_debug
-
+from copy import deepcopy
 FLAGS = tf.app.flags.FLAGS
 
 # Where to find data
@@ -393,13 +393,12 @@ def main(unused_argv):
         model = SummarizationModel(hps, vocab)
         run_eval(model, batcher, vocab)
     elif hps.mode.value == 'decode':
-        decode_model_hps = hps  # This will be the hyperparameters for the decoder model
-
+        decode_model_hps = deepcopy(hps)  # This will be the hyperparameters for the decoder model
+        decode_model_hps.max_dec_steps.value = 1
         # The model is configured with max_dec_steps=1
         # because we only ever run one step of the decoder at a time (to do beam search).
         # Note that the batcher is initialized with max_dec_steps equal to e.g. 100
         # because the batches need to contain the full summaries
-        # decode_model_hps = hps._replace(max_dec_steps=1)
         model = SummarizationModel(decode_model_hps, vocab)
         decoder = BeamSearchDecoder(model, batcher, vocab)
         # decode indefinitely (unless single_pass=True, in which case deocde the dataset exactly once)

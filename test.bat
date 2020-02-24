@@ -9,4 +9,4 @@ python run_summarization.py ^
     --coverage=0 ^
     --batch_size=1 ^
     --single_pass=1 ^
-    --max_dec_steps=1
+    --max_dec_steps=30
