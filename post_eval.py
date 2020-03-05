@@ -6,8 +6,29 @@ from nltk.translate.bleu_score import SmoothingFunction
 from rouge import Rouge
 import nltk
 import statistics
+import jieba
 
 smoothing_function = SmoothingFunction().method2
+
+
+def is_all_chinese(word):
+    # identify whether all chinese characters
+    for _char in word:
+        if not '\u4e00' <= _char <= '\u9fa5':
+            return False
+    return True
+
+
+def cut_mixed_sentence(text):
+    # for chinese, return character; for english, return word;
+    jieba_words = list(jieba.cut(text))
+    ret_chars = []
+    for word in jieba_words:
+        if is_all_chinese(word):
+            ret_chars.extend(list(word))
+        else:
+            ret_chars.append(word)
+    return ' '.join(ret_chars)
 
 
 class Scorer(object):
@@ -144,8 +165,7 @@ def read_file_and_score(result_file):
         "BLEU4": 0.0,
         "ROUGE1": 0.0,
         "ROUGE2": 0.0,
-        "ROUGEL": 0.0,
-        "F1": 0.0
+        "ROUGEL": 0.0
     }
     with open(result_file, "r", encoding="utf8") as result_f:
         lines = result_f.readlines()
@@ -153,8 +173,10 @@ def read_file_and_score(result_file):
         references = []
         for line in lines:
             _, reference, prediction = line.strip().split('\t\t')
-            predictions.append(prediction)
-            references.append(reference)
+            # use space to split the sentence
+            predictions.append(cut_mixed_sentence(prediction))
+            references.append(cut_mixed_sentence(reference))
+
         metrics['EM'] = Scorer.em_score(references, predictions)
         metrics['BLEU1'], metrics['BLEU2'], _, metrics['BLEU4'] = Scorer.bleu_score(references, predictions)
         metrics['ROUGE1'], metrics['ROUGE2'], metrics['ROUGEL'] = Scorer.rouge_score(references, predictions)
