@@ -5,6 +5,7 @@ from nltk.translate.bleu_score import sentence_bleu
 from nltk.translate.bleu_score import SmoothingFunction
 from rouge import Rouge
 import nltk
+import statistics
 
 smoothing_function = SmoothingFunction().method2
 
@@ -135,9 +136,33 @@ class Scorer(object):
                 inter_count_3, pred_count_3, ref_count_3)
 
 
-def read_file_and_score(predict_file, test_file):
-    predict_lines = predict_file
+def read_file_and_score(result_file):
+    metrics = {
+        "EM": 0.0,
+        "BLEU1": 0.0,
+        "BLEU2": 0.0,
+        "BLEU4": 0.0,
+        "ROUGE1": 0.0,
+        "ROUGE2": 0.0,
+        "ROUGEL": 0.0,
+        "F1": 0.0
+    }
+    with open(result_file, "r", encoding="utf8") as result_f:
+        lines = result_f.readlines()
+        predictions = []
+        references = []
+        for line in lines:
+            _, reference, prediction = line.strip().split('\t\t')
+            predictions.append(prediction)
+            references.append(reference)
+        metrics['EM'] = Scorer.em_score(references, predictions)
+        metrics['BLEU1'], metrics['BLEU2'], _, metrics['BLEU4'] = Scorer.bleu_score(references, predictions)
+        metrics['ROUGE1'], metrics['ROUGE2'], metrics['ROUGEL'] = Scorer.rouge_score(references, predictions)
+        for key in metrics.keys():
+            if isinstance(metrics[key], list):
+                metrics[key] = statistics.mean(metrics[key])
+        print(metrics)
 
 
 if __name__ == '__main__':
-    read_file_and_score()
+    read_file_and_score("log\\fix_dataset\decode_test_50maxenc_4beam_5mindec_30maxdec_ckpt-10017\\result.txt")
