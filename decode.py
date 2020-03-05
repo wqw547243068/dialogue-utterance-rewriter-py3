@@ -50,7 +50,7 @@ class BeamSearchDecoder(object):
         self._sess = tf.Session(config=util.get_config())
 
         # Load an initial checkpoint to use for decoding
-        ckpt_path = util.load_ckpt(self._saver, self._sess)
+        ckpt_path = util.load_ckpt(self._saver, self._sess, ckpt_dir="eval")
 
         if FLAGS.single_pass:
             # Make a descriptive decode directory name
@@ -101,7 +101,7 @@ class BeamSearchDecoder(object):
                 # results_dict = rouge_eval(self._rouge_ref_dir,
                 #                           self._rouge_dec_dir)
                 # rouge_log(results_dict, self._decode_dir)
-                return
+                # return
 
             original_context = batch.original_contexts[0]  # string
             original_query = batch.original_querys[0]
