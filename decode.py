@@ -101,7 +101,7 @@ class BeamSearchDecoder(object):
                 # results_dict = rouge_eval(self._rouge_ref_dir,
                 #                           self._rouge_dec_dir)
                 # rouge_log(results_dict, self._decode_dir)
-                # return
+                return
 
             original_context = batch.original_contexts[0]  # string
             original_query = batch.original_querys[0]
