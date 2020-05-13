@@ -1,5 +1,36 @@
 # dialogue-utterance-rewriter-py3
 
+## 多轮对话改写
+
+- [ACL 2019 | 使用表达改写提升多轮对话系统效果](https://www.aminer.cn/research_report/5d527dd4d5e908133c946b07)
+- [Transformer多轮对话改写实践](https://zhuanlan.zhihu.com/p/137127209)
+   - 介绍了多轮对话存在指代和信息省略的问题，同时提出了一种新方法-抽取式多轮对话改写，可以更加实用的部署于线上对话系统，并且提升对话效果
+- 日常的交流对话中
+   - 30%的对话会包含指代词。比如“它”用来指代物，“那边”用来指代地址
+   - 同时有50%以上的对话会有信息省略
+- 对话改写的任务有两个：1这句话要不要改写；2 把信息省略和指代识别出来。对于baseline论文放出的数据集，有90%的数据都是简单改写，也就是满足任务2，只有信息省略或者指代词。少数改写语句比较复杂，本文训练集剔除他们，但是验证集保留。
+![](https://pic1.zhimg.com/80/v2-d80efd57b81c6ece955a247ca7247db4_1440w.jpg)
+- Transformers结构可以通过attention机制有效提取指代词和上下文中关键信息的配对，最近也有一篇很好的工作专门用Bert来做指代消岐[2]。经过transformer结构提取文本特征后，模型结构及输出如下图。
+
+![](https://pic4.zhimg.com/80/v2-0c4a789b68c60c8279dbd98fc18b5b2b_1440w.jpg)
+- 输出五个指针中：
+   - 关键信息的start和end专门用来识别需要为下文做信息补全或者指代的词；
+   - 补全位置用来预测关键信息(start-end)插入在待改写语句的位置，实验中用插入位置的下一个token来表示；
+   - 指代start和end用来识别带改写语句出现的指代词。
+   - 当待改写语句中不存在指代词或者关键信息的补全时，指代的start和end将会指向cls，同理补全位置也这样。如同阅读理解任务中不存在答案一样，这样的操作在做预测任务时，当指代和补全位置的预测最大概率都位于cls时就可以避免改写，从而保证了改写的稳定性。
+
+![](http://zhengwen.aminer.cn/a1.png)
+
+- 模型框架
+![](http://zhengwen.aminer.cn/a2.png)
+
+- 对于任务导向型对话系统和闲聊型对话系统均有效果提升，实现了用更成熟的单轮对话技术解决多轮对话问题。
+![](http://zhengwen.aminer.cn/a10.png)
+
+
+
+## installation
+
 This is an unoffical repo adapted from [Repo](https://github.com/chin-gyou/dialogue-utterance-rewriter). Followings are the differences:
 
 | Desc | Official | This |
